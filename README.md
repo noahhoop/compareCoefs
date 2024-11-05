@@ -7,6 +7,8 @@ This function is intended to compare models with the same dependent variable; if
 
 The method for testing the equality of regression coefficients implemented in compareCoefs is based on the formula presented in Paternoster et al. (1998)  
 
+Currently it is compatiable with the functions lm(), lm_robust(), feols() and aggte() from the did package.
+
 ## Installation 
 ```r
 # install.packages("devtools")  
