@@ -1,12 +1,18 @@
 #' Compare how a coefficient differs between models
 #'
-#' This function compares the coefficient of one variable in different models.
+#' This function compares the coefficient of one variable across two models.
 #' It can be used for mediation analysis to check if a mediator significantly reduces the coefficient of that variable.
 #' Another use case is when the model doesn't allow a specification of an interaction effect like the did package.
 #' Here you can run the model for different groups and compare the estimates.
 #' The function should only be used for comparing models with the same dependent variable unless it is standardized.
-#' @param The input are the two model objects and a string for the coefficients name. This should be the same as displayed in the model summary.
-#' @return It returns a vector with the difference, z- and p-value.
+#' 
+#' It is compatible with lm(), lm_robust(), feols() and aggte().
+#'
+#' @param m1 A model object. The first model to compare.
+#' @param m2 A model object. The second model to compare.
+#' @param coef A string. The name of the coefficient to compare, as it appears in the model summary.
+#' @return A vector with the difference in the coefficient, the z-value, and the p-value.
+#' @references Paternoster, R., Brame, R., Mazerolle, P., & Piquero, A. (1998). Using the Correct Statistical Test for the Equality of Regression Coefficients. *Criminology, 36*(4), 859–866. https://doi.org/10.1111/j.1745-9125.1998.tb01268.x
 #' @export
 
 compare_coefs <- function(m1, m2, coef) {
