@@ -16,10 +16,13 @@ devtools::install_github("yourusername/compareCoefs")
 ## Example
 Here’s a quick example of how to use compareCoefs:
 ```r
-# Assume model1 and model2 are two fitted models with a common predictor variable  
-result <- compareCoefs(model1, model2, "your_variable")  
-print(result)  
-# Output: A vector with the difference in coefficients, z-score, and p-value.  
+m1 <- lm(mpg ~ hp, mtcars)
+m2 <- lm(mpg ~ hp + wt, mtcars)
+
+compare_coefs(m1, m2, "hp")
+#> 
+#> Difference                     z                     p 
+#> "-0.0364553310894027"   "-2.68799042649229"         "0.007188346" 
 ```
 References  
 
