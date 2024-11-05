@@ -10,7 +10,7 @@ The method for testing the equality of regression coefficients implemented in co
 ## Installation 
 ```r
 # install.packages("devtools")  
-devtools::install_github("yourusername/compareCoefs")  
+devtools::install_github("noahhoop/compareCoefs")  
 ```
 
 ## Example
