@@ -121,6 +121,11 @@ compare_coefs <- function(m1, m2, coef) {
 
 }
 
+
+#' Summary method for coefComparison objects
+#'
+#' @param object An object of class "coefComparison".
+#' @return Prints the summary of coefficient comparison.
 #' @export
 summary.coefComparison <- function(object, ...) {
   cat("Coefficient Comparison Summary:\n")
