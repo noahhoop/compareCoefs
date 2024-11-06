@@ -7,15 +7,25 @@
 compare_coefs(m1, m2, coef)
 }
 \arguments{
-\item{The}{input are the two model objects and a string for the coefficients name. This should be the same as displayed in the model summary.}
+\item{m1}{A model object. The first model to compare.}
+
+\item{m2}{A model object. The second model to compare.}
+
+\item{coef}{A string. The name of the coefficient to compare, as it appears in the model summary.}
 }
 \value{
-It returns a vector with the difference, z- and p-value.
+A vector with the difference in the coefficient, the z-value, and the p-value.
 }
 \description{
-This function compares the coefficient of one variable in different models.
+This function compares the coefficient of one variable across two models.
 It can be used for mediation analysis to check if a mediator significantly reduces the coefficient of that variable.
 Another use case is when the model doesn't allow a specification of an interaction effect like the did package.
 Here you can run the model for different groups and compare the estimates.
 The function should only be used for comparing models with the same dependent variable unless it is standardized.
+}
+\details{
+It is compatible with lm(), lm_robust(), feols() and aggte().
+}
+\references{
+Paternoster, R., Brame, R., Mazerolle, P., & Piquero, A. (1998). Using the Correct Statistical Test for the Equality of Regression Coefficients. \emph{Criminology, 36}(4), 859–866. https://doi.org/10.1111/j.1745-9125.1998.tb01268.x
 }
