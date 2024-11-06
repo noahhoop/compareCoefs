@@ -22,9 +22,14 @@ m1 <- lm(mpg ~ hp, mtcars)
 m2 <- lm(mpg ~ hp + wt, mtcars)
 
 compare_coefs(m1, m2, "hp")
-#> 
-#> Difference                     z                     p 
-#> "-0.0364553310894027"   "-2.68799042649229"         "0.007188346" 
+# $Difference
+# [1] -0.03645533
+# 
+# $z.value
+# [1] -2.68799
+# 
+# $p.value
+# [1] "0.007188346"
 ```
 References  
 
