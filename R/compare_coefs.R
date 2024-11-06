@@ -120,17 +120,3 @@ compare_coefs <- function(m1, m2, coef) {
   }
 
 }
-
-
-#' Summary method for coefComparison objects
-#'
-#' @param object An object of class "coefComparison".
-#' @return Prints the summary of coefficient comparison.
-#' @export
-summary.coefComparison <- function(object, ...) {
-  cat("Coefficient Comparison Summary:\n")
-  cat("-------------------------------\n")
-  cat(sprintf("Difference: %f\n", object$Difference))
-  cat(sprintf("Z-value:    %f\n", object$z.value))
-  cat(sprintf("P-value:    %s\n", object$p.value))
-}
