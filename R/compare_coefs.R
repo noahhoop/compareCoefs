@@ -121,7 +121,7 @@ compare_coefs <- function(m1, m2, coef) {
 
 }
 
-
+#' @export
 summary.coefComparison <- function(object, ...) {
   cat("Coefficient Comparison Summary:\n")
   cat("-------------------------------\n")
