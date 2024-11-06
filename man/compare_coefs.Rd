@@ -25,6 +25,8 @@ The function should only be used for comparing models with the same dependent va
 }
 \details{
 It is compatible with lm(), lm_robust(), feols() and aggte().
+The formula (based on Paternoster et al. (1998)) for the calculation is:
+\deqn{Z = \frac{b_1 - b_2}{\sqrt{SE_{b_1}^2 + SE_{b_2}^2}}}
 }
 \references{
 Paternoster, R., Brame, R., Mazerolle, P., & Piquero, A. (1998). Using the Correct Statistical Test for the Equality of Regression Coefficients. \emph{Criminology, 36}(4), 859–866. https://doi.org/10.1111/j.1745-9125.1998.tb01268.x
