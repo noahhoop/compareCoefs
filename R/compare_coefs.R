@@ -7,11 +7,13 @@
 #' The function should only be used for comparing models with the same dependent variable unless it is standardized.
 #'
 #' It is compatible with lm(), lm_robust(), feols() and aggte().
+#' The formula (based on Paternoster et al. (1998)) for the calculation is:
+#' \deqn{Z = \frac{b_1 - b_2}{\sqrt{SE_{b_1}^2 + SE_{b_2}^2}}}
 #'
 #' @param m1 A model object. The first model to compare.
 #' @param m2 A model object. The second model to compare.
 #' @param coef A string. The name of the coefficient to compare, as it appears in the model summary.
-#' @return A vector with the difference in the coefficient, the z-value, and the p-value.
+#' @return A list with the difference in the coefficient, the z-value, and the p-value.
 #' @references Paternoster, R., Brame, R., Mazerolle, P., & Piquero, A. (1998). Using the Correct Statistical Test for the Equality of Regression Coefficients. *Criminology, 36*(4), 859–866. https://doi.org/10.1111/j.1745-9125.1998.tb01268.x
 #' @export
 
@@ -43,7 +45,7 @@ compare_coefs <- function(m1, m2, coef) {
              result <- list(Difference = b,
                             z.value = z,
                             p.value = p)
-             return(result) #returns the difference, z-value and p-value
+             #return(result) #returns the difference, z-value and p-value
            },
            "lm_robust" = {
 
@@ -66,7 +68,7 @@ compare_coefs <- function(m1, m2, coef) {
              result <- list(Difference = b,
                             z.value = z,
                             p.value = p)
-             return(result) #returns the difference, z-value and p-value
+             #return(result) #returns the difference, z-value and p-value
            },
            "fixest" = {
              b1 <- m1$coeftable[coef, "Estimate"]
@@ -84,7 +86,7 @@ compare_coefs <- function(m1, m2, coef) {
              result <- list(Difference = b,
                             z.value = z,
                             p.value = p)
-             return(result) #returns the difference, z-value and p-value
+             #return(result) #returns the difference, z-value and p-value
            },
            "AGGTEobj" = {
              b1 <- m1$overall.att
@@ -102,7 +104,7 @@ compare_coefs <- function(m1, m2, coef) {
              result <- list(Difference = b,
                             z.value = z,
                             p.value = p)
-             return(result) #returns the difference, z-value and p-value
+            # return(result) #returns the difference, z-value and p-value
            },
            {
              # Default case if none of the specified classes match
@@ -110,8 +112,20 @@ compare_coefs <- function(m1, m2, coef) {
            }
     )
 
+    class(result) <- "coefComparison"
+    return(result)
+
   } else {
     stop("Models are of different class. Use the same function for both models.")
   }
 
+}
+
+
+summary.coefComparison <- function(object, ...) {
+  cat("Coefficient Comparison Summary:\n")
+  cat("-------------------------------\n")
+  cat(sprintf("Difference: %f\n", object$Difference))
+  cat(sprintf("Z-value:    %f\n", object$z.value))
+  cat(sprintf("P-value:    %s\n", object$p.value))
 }
