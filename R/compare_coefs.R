@@ -5,7 +5,7 @@
 #' Another use case is when the model doesn't allow a specification of an interaction effect like the did package.
 #' Here you can run the model for different groups and compare the estimates.
 #' The function should only be used for comparing models with the same dependent variable unless it is standardized.
-#' 
+#'
 #' It is compatible with lm(), lm_robust(), feols() and aggte().
 #'
 #' @param m1 A model object. The first model to compare.
@@ -16,15 +16,15 @@
 #' @export
 
 compare_coefs <- function(m1, m2, coef) {
-  
+
   if (class(m1) == class(m2)) {
-    
+
     model_class <- class(m1)
-    
+
     # Use switch to handle different model types
     switch(model_class,
            "lm" = {
-             
+
              m1 <- summary(m1)
              m2 <- summary(m2)
              # first extracting the estimates and standard errors
@@ -40,12 +40,14 @@ compare_coefs <- function(m1, m2, coef) {
              # based on the formula of Paternoster et al. 1998
              z = b / sqrt(sc)
              p <- format(2*pnorm(-abs(z)), scientific=FALSE)
-             result <- c(Difference = b, z = z, p = p)
+             result <- list(Difference = b,
+                            z.value = z,
+                            p.value = p)
              return(result) #returns the difference, z-value and p-value
            },
            "lm_robust" = {
-             
-             
+
+
              m1 <- summary(m1)
              m2 <- summary(m2)
              # first extracting the estimates and standard errors
@@ -61,7 +63,9 @@ compare_coefs <- function(m1, m2, coef) {
              # based on the formula of Paternoster et al. 1998
              z = b / sqrt(sc)
              p <- format(2*pnorm(-abs(z)), scientific=FALSE)
-             result <- c(Difference = b, z = z, p = p)
+             result <- list(Difference = b,
+                            z.value = z,
+                            p.value = p)
              return(result) #returns the difference, z-value and p-value
            },
            "fixest" = {
@@ -77,7 +81,9 @@ compare_coefs <- function(m1, m2, coef) {
              # based on the formula of Paternoster et al. 1998
              z = b / sqrt(sc)
              p <- format(2*pnorm(-abs(z)), scientific=FALSE)
-             result <- c(Difference = b, z = z, p = p)
+             result <- list(Difference = b,
+                            z.value = z,
+                            p.value = p)
              return(result) #returns the difference, z-value and p-value
            },
            "AGGTEobj" = {
@@ -93,7 +99,9 @@ compare_coefs <- function(m1, m2, coef) {
              # based on the formula of Paternoster et al. 1998
              z = b / sqrt(sc)
              p <- format(2*pnorm(-abs(z)), scientific=FALSE)
-             result <- c(Difference = b, z = z, p = p)
+             result <- list(Difference = b,
+                            z.value = z,
+                            p.value = p)
              return(result) #returns the difference, z-value and p-value
            },
            {
@@ -101,11 +109,9 @@ compare_coefs <- function(m1, m2, coef) {
              stop("Unknown model type. Please provide a model from `lm`, `lm_robust`, or `feols`.")
            }
     )
-    
+
   } else {
     stop("Models are of different class. Use the same function for both models.")
   }
-  
+
 }
-
-
