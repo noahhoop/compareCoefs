@@ -17,7 +17,7 @@
 #' @references Paternoster, R., Brame, R., Mazerolle, P., & Piquero, A. (1998). Using the Correct Statistical Test for the Equality of Regression Coefficients. *Criminology, 36*(4), 859–866. https://doi.org/10.1111/j.1745-9125.1998.tb01268.x
 #' @export
 
-compare_coefs <- function(m1, m2, coef) {
+compare_coefs <- function(m1, m2, coef, ci.lvl = 0.95) {
 
   if (class(m1) == class(m2)) {
 
@@ -27,66 +27,92 @@ compare_coefs <- function(m1, m2, coef) {
     switch(model_class,
            "lm" = {
 
-             m1 <- summary(m1)
-             m2 <- summary(m2)
-             # first extracting the estimates and standard errors
-             b1 <- m1$coefficients[coef, "Estimate"]
-             se1 <- m1$coefficients[coef, "Std. Error"]
-             b2 <- m2$coefficients[coef, "Estimate"]
-             se2 <- m2$coefficients[coef, "Std. Error"]
-             # calculate the difference of estimates
-             b = b1 - b2
-             s1 = se1^2
-             s2 = se2^2
-             sc = s1 + s2
-             # based on the formula of Paternoster et al. 1998
-             z = b / sqrt(sc)
-             p <- format(2*pnorm(-abs(z)), scientific=FALSE)
-             result <- list(Difference = b,
-                            z.value = z,
-                            p.value = p)
-             #return(result) #returns the difference, z-value and p-value
+             if (coef %in% names(m1$coefficients) & coef %in% names(m2$coefficients)) {
+               sm1 <- summary(m1)
+               sm2 <- summary(m2)
+               # first extracting the estimates and standard errors
+               b1 <- sm1$coefficients[coef, "Estimate"]
+               se1 <- sm1$coefficients[coef, "Std. Error"]
+               b2 <- sm2$coefficients[coef, "Estimate"]
+               se2 <- sm2$coefficients[coef, "Std. Error"]
+               # calculate the difference of estimates
+               b = b1 - b2
+               s1 = se1^2
+               s2 = se2^2
+               sc = s1 + s2
+               # based on the formula of Paternoster et al. 1998
+               z = b / sqrt(sc)
+               p <- format(2*pnorm(-abs(z)), scientific=FALSE)
+               conf.low = b - qnorm(1 - (1 - ci.lvl) / 2)*sqrt(sc)
+               conf.high = b + qnorm(1 - (1 - ci.lvl) / 2)*sqrt(sc)
+               result <- list(Difference = b,
+                              z.value = z,
+                              p.value = p,
+                              conf.low = conf.low,
+                              conf.high = conf.high)
+             } else {
+               stop("The coefficient name is not presented in both models. Please check if the name is correct. For factor variables make sure that the name includes the variable and factor name as shown in the model summary.")
+             }
+
            },
            "lm_robust" = {
 
 
-             m1 <- summary(m1)
-             m2 <- summary(m2)
-             # first extracting the estimates and standard errors
-             b1 <- m1$coefficients[coef, "Estimate"]
-             se1 <- m1$coefficients[coef, "Std. Error"]
-             b2 <- m2$coefficients[coef, "Estimate"]
-             se2 <- m2$coefficients[coef, "Std. Error"]
-             # calculate the difference of estimates
-             b = b1 - b2
-             s1 = se1^2
-             s2 = se2^2
-             sc = s1 + s2
-             # based on the formula of Paternoster et al. 1998
-             z = b / sqrt(sc)
-             p <- format(2*pnorm(-abs(z)), scientific=FALSE)
-             result <- list(Difference = b,
-                            z.value = z,
-                            p.value = p)
-             #return(result) #returns the difference, z-value and p-value
+
+             if (coef %in% names(m1$coefficients) & coef %in% names(m2$coefficients)) {
+
+               sm1 <- summary(m1)
+               sm2 <- summary(m2)
+               # first extracting the estimates and standard errors
+               b1 <- sm1$coefficients[coef, "Estimate"]
+               se1 <- sm1$coefficients[coef, "Std. Error"]
+               b2 <- sm2$coefficients[coef, "Estimate"]
+               se2 <- sm2$coefficients[coef, "Std. Error"]
+               # calculate the difference of estimates
+               b = b1 - b2
+               s1 = se1^2
+               s2 = se2^2
+               sc = s1 + s2
+               # based on the formula of Paternoster et al. 1998
+               z = b / sqrt(sc)
+               p <- format(2*pnorm(-abs(z)), scientific=FALSE)
+               conf.low = b - qnorm(1 - (1 - ci.lvl) / 2)*sqrt(sc)
+               conf.high = b + qnorm(1 - (1 - ci.lvl) / 2)*sqrt(sc)
+               result <- list(Difference = b,
+                              z.value = z,
+                              p.value = p,
+                              conf.low = conf.low,
+                              conf.high = conf.high)
+             } else {
+               stop("The coefficient name is not presented in both models. Please check if the name is correct. For factor variables make sure that the name includes the variable and factor name as shown in the model summary.")
+             }
+
            },
            "fixest" = {
-             b1 <- m1$coeftable[coef, "Estimate"]
-             se1 <- m1$coeftable[coef, "Std. Error"]
-             b2 <- m2$coeftable[coef, "Estimate"]
-             se2 <- m2$coeftable[coef, "Std. Error"]
-             # calculate the difference of estimates
-             b = b1 - b2
-             s1 = se1^2
-             s2 = se2^2
-             sc = s1 + s2
-             # based on the formula of Paternoster et al. 1998
-             z = b / sqrt(sc)
-             p <- format(2*pnorm(-abs(z)), scientific=FALSE)
-             result <- list(Difference = b,
-                            z.value = z,
-                            p.value = p)
-             #return(result) #returns the difference, z-value and p-value
+             if (coef %in% names(m1$coefficients) & coef %in% names(m2$coefficients)) {
+
+               b1 <- m1$coeftable[coef, "Estimate"]
+               se1 <- m1$coeftable[coef, "Std. Error"]
+               b2 <- m2$coeftable[coef, "Estimate"]
+               se2 <- m2$coeftable[coef, "Std. Error"]
+               # calculate the difference of estimates
+               b = b1 - b2
+               s1 = se1^2
+               s2 = se2^2
+               sc = s1 + s2
+               # based on the formula of Paternoster et al. 1998
+               z = b / sqrt(sc)
+               p <- format(2*pnorm(-abs(z)), scientific=FALSE)
+               conf.low = b - qnorm(1 - (1 - ci.lvl) / 2)*sqrt(sc)
+               conf.high = b + qnorm(1 - (1 - ci.lvl) / 2)*sqrt(sc)
+               result <- list(Difference = b,
+                              z.value = z,
+                              p.value = p,
+                              conf.low = conf.low,
+                              conf.high = conf.high)
+             } else {
+               stop("The coefficient name is not presented in both models. Please check if the name is correct. For factor variables make sure that the name includes the variable and factor name as shown in the model summary.")
+             }
            },
            "AGGTEobj" = {
              b1 <- m1$overall.att
@@ -101,14 +127,17 @@ compare_coefs <- function(m1, m2, coef) {
              # based on the formula of Paternoster et al. 1998
              z = b / sqrt(sc)
              p <- format(2*pnorm(-abs(z)), scientific=FALSE)
+             conf.low = b - qnorm(1 - (1 - ci.lvl) / 2)*sqrt(sc)
+             conf.high = b + qnorm(1 - (1 - ci.lvl) / 2)*sqrt(sc)
              result <- list(Difference = b,
                             z.value = z,
-                            p.value = p)
-            # return(result) #returns the difference, z-value and p-value
+                            p.value = p,
+                            conf.low = conf.low,
+                            conf.high = conf.high)
            },
            {
              # Default case if none of the specified classes match
-             stop("Unknown model type. Please provide a model from `lm`, `lm_robust`, or `feols`.")
+             stop("Unknown model type. Please provide a model from `lm`, `lm_robust`, `feols` or `aggte`.")
            }
     )
 
